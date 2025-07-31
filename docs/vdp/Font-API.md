@@ -4,7 +4,7 @@ The built-in font is based on windows code page 1252, also known as "windows-125
 
 The diagram below shows the font, noting that the first 2 rows are proposed only at this stage, and are currently blank. All characters fit within an 8x8 pixel grid.
 
-![](./images/agon_default_font.png)
+![font map](../images/agon_default_font.png)
 
 # VDU 23, 0, &95: Font management
 
