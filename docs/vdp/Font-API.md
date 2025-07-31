@@ -1,3 +1,11 @@
+# Agon built-in system font
+
+The built-in font is based on windows code page 1252, also known as "windows-1252". The font includes a number of modifications, including additional characters that were added to support the Teletext symbols. Additionally, there is a proposed font addition including the "graphics extended" version of the code page, again with modifications. The card suits were added to use the available characters that were already available in the Teletext additions.
+
+The diagram below shows the font, noting that the first 2 rows are proposed only at this stage, and are currently blank. All characters fit within an 8x8 pixel grid.
+
+![](./images/agon_default_font.png)
+
 # VDU 23, 0, &95: Font management
 
 From Console8 VDP 2.8.0 onwards, the VDP now has an API to allow for different fonts to be uploaded to the VDP and used on your Agon.  At this time the VDP supports mono-spaced fonts only, each only at a single size.  Future versions of this API may introduce support for variable width fonts, and displaying text at different sizes.
