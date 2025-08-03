@@ -1,8 +1,14 @@
 # Agon built-in system font
 
-The built-in font is based on windows code page 1252, also known as "windows-1252". The font includes a number of modifications, including additional characters that were added to support the Teletext symbols. Additionally, there is a proposed font addition including the "graphics extended" version of the code page, again with modifications. The card suits were added to use the available characters that were already available in the Teletext additions.
+The built-in font is based on windows code page 1252, also known as "windows-1252". The font includes a number of modifications, including additional characters that were added to support the Teletext symbols. The characters in the range 0-31, and 127, and not directly displayable as they have meanining as control characters to the VDP. In order to access them, you need to use special codes outlined below. The symbols occupying the range 0-31 are only included from VDP 2.15 onwards, and aligned with the "graphics extended" version of the code page, again with some minor modifications. The card suits were added to use the available characters that were already available in the Teletext additions.
 
-The diagram below shows the font, noting that the first 2 rows are proposed only at this stage, and are currently blank. All characters fit within an 8x8 pixel grid.
+## Displaying and reprogramming non-printable characters 0-31 and 127
+Characters in the range 0-31, and 127, are considered control characters and when printed directly all have meaning to the VDP to perform particular actions as [VDU Commands](./VDU-Commands.md). In order to display a character in that range you will either need to "escape" it (from VDP 2.3 onwards) using the `VDU 27` [sequence](./VDU-Commands.md#vdu-27-char-output-character-to-screen-), or from VDP 2.9 you can use the "print buffer" `VDU 23, 0, &9B, bufferId;` [method](./System-Commands.md#vdu-23-0-9b-bufferid-print-the-contents-of-a-buffer-to-the-screen-) which will raw display all symbols in the buffer, including treating all control characters as printable as defined in the current font.
+
+Similarly, individually reprogramming characters in the range 0-31 cannot be done by the usual `VDU 23, char_no, b1, b2, b3, b4, b5, b6, b7, b8` sequence, however, from VDP 2.3 they can be individually redefined using the `VDU 23, 0, &90, n, b1, b2, b3, b4, b5, b6, b7, b8` [sequence](./System-Commands.md#vdu-23-0-90-n-b1-b2-b3-b4-b5-b6-b7-b8-redefine-character-n-0-255-with-8-bytes-of-data--vdu-23-0-90). These characters can also be reprogrammed by replacing the entire font as outlined in the [Font management](./Font-API.md#vdu-23-0-95-font-management) sequences below.
+
+## System font character set
+The default system font is 8 pixels by 8 pixels, therefore all characters in the chart below fit within an 8x8 pixel grid.
 
 ![font map](../images/agon_default_font.png)
 
