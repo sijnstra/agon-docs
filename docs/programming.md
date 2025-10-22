@@ -1,4 +1,4 @@
-# Programming your Agon Light computer
+# Programming your Agon computer
 
 Whilst there is a lot of great software you can download and run on your Agon, you can write your own software too. And this is probably the reason you bought your Agon!
 
@@ -9,6 +9,10 @@ Some of the languages run directly on your Agon computer. Some run on your Windo
 Most of the languages available allow you to code in traditional 16bit or 24bit _ADL mode_, where the full amount of memory is available, not limited to 64k.
 
 In order to help speed up development, there is also an emulator so your can program and test _most_ code quickly on your PC, before transferring to the Agon.
+
+It doesn't matter which model you own from the Agon platform range of computers, inside they are all the same and can run exactly the same software. The only thing which might make your software be less compatible is if you utilise features from the latest OS builds where another user may not have updated their system. If you intend on sharing your programs, make sure you specifiy the minimum system of MOS/VDP required.
+
+There are several getting started guides on the internet, as well as videos, such as those from [AgonBits] (https://www.youtube.com/@AgonBits)
 
 
 
