@@ -6,13 +6,13 @@ There are several programming languages available, something for everyone, from 
 
 Some of the languages run directly on your Agon computer. Some run on your Windows, Mac or Linux PC for transfer to your Agon. Plus, there are some which your can run both on the Agon and your PC.
 
-Most of the languages available allow you to code in traditional 16bit or 24bit _ADL mode_.
+Most of the languages available allow you to code in traditional 16bit or 24bit _ADL mode_, where the full amount of memory is available, not limited to 64k.
 
 In order to help speed up development, there is also an emulator so your can program and test _most_ code quickly on your PC, before transferring to the Agon.
 
 
 
-## Languages
+## The Languages
 
 ### Basic
 
@@ -33,8 +33,6 @@ You can write your code in whatever text editor you like, then assmble your sour
 Many programmers enjoy coding in `C` or `C++`. This language is also available and there are a few options for coding on your desktop PC, then compiing and transferring onto your Agon to run.
 
 
-
-
 ### B Simple
 
 _B_ was a language which, unsurpisingly, was around before _C_. This interpretation, `B Simple`, allows you to create programs that will be familliar to anyone who has used C, but without all the advance features of C++. B Simple can be used on the Agon itslef, or on your desktop PC under Mac, Linux, Windows or Raspberry Pi. 
@@ -43,9 +41,9 @@ _B_ was a language which, unsurpisingly, was around before _C_. This interpretat
 
 ### Forth
 
-Some Agon users might reminis on the days long gone of owning (or wishing they owned) a Jupiter Ace, with its Forth programming language. 
+Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a Jupiter Ace, with its more obscure _Forth_ programming language. 
 
-Agon Forth runs on the Agon itself and provides a great way to learn the language.
+`Agon Forth` runs on the Agon itself and provides a great way to learn the language.
 
 
 
