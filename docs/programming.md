@@ -28,17 +28,17 @@ The Agon port of BBC Basic provides a familiar yet powerful language used by beg
 
 BBC Basic is available in two versions: Z80 version with a memory limit of 64k, and ADL version using all memory available.
 
-More information on these can be found here: https://github.com/breakintoprogram/agon-bbc-basic or https://github.com/breakintoprogram/agon-bbc-basic-adl
+More information on [Z80 version](https://github.com/breakintoprogram/agon-bbc-basic) or [ADL version](https://github.com/breakintoprogram/agon-bbc-basic-adl)
 
 Or, for a quick update of your current version:
 
-Download from here (Z80 version): https://github.com/breakintoprogram/agon-bbc-basic/releases/latest
+Download the [Z80 version](https://github.com/breakintoprogram/agon-bbc-basic/releases/latest)
 
-Download from here (ADL version): https://github.com/breakintoprogram/agon-bbc-basic-adl/releases/latest
+Download the [ADL version](https://github.com/breakintoprogram/agon-bbc-basic-adl/releases/latest)
 
 In addition, there is a port of Richard Russell's BASIC V available. Although it runs in Z80 mode (ie. limited to 64k of memory), BASIC V includes several new keywords, and supports a handful of useful new programming structures.
 
-Download BASIC V from here: https://github.com/breakintoprogram/agon-bbc-basic-v
+Download [BASIC V](https://github.com/breakintoprogram/agon-bbc-basic-v)
 
 
 ### Z80 Assembly
@@ -47,7 +47,7 @@ If you have ever written software in z80 Assembly for the Sinclair ZX81, ZX Spec
 
 You can write your code in whatever text editor you like, then assmble your source code with `ez80asm`, a z80 assembler which runs on the Agon itself, or on Mac, Windows, Linux, and even Raspberry Pi.
 
-Download ez80asm assembler from here: https://github.com/AgonPlatform/agon-ez80asm
+Download [ez80asm assembler](https://github.com/AgonPlatform/agon-ez80asm)
 
 
 ### C++
@@ -58,7 +58,7 @@ A whole development toolchain is available for for Mac/Linux/Raspberry Pi toolch
 
 AgonDev is still in active development and is getting more advanced every day.
 
-Download AgonDev from here: https://github.com/AgonPlatform/agondev/releases
+Download [AgonDev](https://github.com/AgonPlatform/agondev/releases)
 
 
 ### B Simple
@@ -69,7 +69,7 @@ _B_ was a language which, unsurpisingly, was around before _C_. This interpretat
 
 Whilst `B Simple` has a limited set of variable types, it is fast and easy to use. Plus, it can easily be expanded by writing custom libraries in z80 assembler.
 
-Download B Simple from here: https://github.com/nihirash/bsimple-ez80-compiler
+Download [B Simple](https://github.com/nihirash/bsimple-ez80-compiler)
 
 ### Forth
 
@@ -77,24 +77,24 @@ Some Agon users might reminisce on the days long gone of owning (or wishing they
 
 `Agon Forth` runs on the Agon itself and provides a great way to learn the language.
 
-Download Agon Forth from here: https://github.com/lennart-benschop/agon-forth
+Download [Agon Forth](https://github.com/lennart-benschop/agon-forth)
 
 ## The Emulator
 
 If you create your programs on your PC (or Mac/Linux), the Emulator enables you to test them right there, before dowbnloading to your Agon.
 There are some limitations, such as using additional hardwarde (eg. i2c devices, or io ports) but most other features are fully functional, and is updated regularly to keep in line with the latest Agon MOS/VDP operating system.
 
-Download the latest version of the emulator: https://github.com/tomm/fab-agon-emulator
+Download the latest version of [The Agon Emulator](https://github.com/tomm/fab-agon-emulator)
 
 ## Getting your code onto the Agon
 
 If you have been building your Agon program on a PC (or Mac/Linux), there is a tool available called `Hexload` to help transfer the binary over to your Agon.
 
-Further information and download from here: https://github.com/AgonPlatform/agon-hexload
+Further information and download [Hexload](https://github.com/AgonPlatform/agon-hexload)
 
 
-Good luck with your programming. There is lots of community help and support available on the _Agon & Console8 Community_ Discord server, link here: https://discord.com/invite/sN3vXru26s
+Good luck with your programming. There is lots of community help and support available on the [Agon & Console8 Community Discord server](https://discord.com/invite/sN3vXru26s)
 
-There are several getting started guides on the internet too, as well as YouTube videos, such as those from [https://www.youtube.com/@AgonBits] 
+There are several getting started guides on the internet too, as well as YouTube videos, such as those from [AgonBits](https://www.youtube.com/@AgonBits)
 
 
