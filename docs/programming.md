@@ -24,11 +24,17 @@ This most popular language is installed by many Agon owners and is a great way t
 
 This is BBC BASIC from Richard Russell, and it has a direct line of heritage back to the original BBC Micro, and is based on the source code of the version from 1987 that ran on the Z80 second processor.
 
-The Agon port of BBC Basic provides a familiar yet powerful language used by beginners and experts alike. It runs directly on the Agon computer and is often started automaticaly by many users with a command in the `autoexec.txt` file.
+The Agon port of BBC Basic provides a familiar yet powerful language used by beginners and experts alike. It runs directly on the Agon computer and is often started automatically by many users with a command in in their system boot script `./MOS.md#boot-script`.
 
-Download from here (16bit mode): https://github.com/breakintoprogram/agon-bbc-basic
+BBC Basic is available in two versions: Z80 version with a memory limit of 64k, and ADL version using all memory available.
 
-Download from here (ADL mode): https://github.com/breakintoprogram/agon-bbc-basic-adl
+More information on these can be found here: https://github.com/breakintoprogram/agon-bbc-basic or https://github.com/breakintoprogram/agon-bbc-basic-adl
+
+Or, for a quick update of your current version:
+
+Download from here (Z80 version): https://github.com/breakintoprogram/agon-bbc-basic/releases/latest
+
+Download from here (ADL version): https://github.com/breakintoprogram/agon-bbc-basic-adl/releases/latest
 
 In addition, there is a port of Richard Russell's BASIC V available. Although it runs in Z80 mode (ie. limited to 64k of memory), BASIC V includes several new keywords, and supports a handful of useful new programming structures.
 
@@ -46,13 +52,13 @@ Download ez80asm assembler from here: https://github.com/AgonPlatform/agon-ez80a
 
 ### C++
 
-Many programmers enjoy coding in `C` or `C++`. This language is also available and there are a few options for coding on your desktop PC, then compiing and transferring onto your Agon to run.
+Many programmers enjoy coding in `C` or `C++`. This language is also available and there are a few options for coding on your desktop PC, then compiling and transferring onto your Agon to run.
 
-A whole development toolchain is available for Windows called `AgDev`, and a Mac/Linux/Raspberry Pi toolchain called `Agondev`.
+A whole development toolchain is available for for Mac/Linux/Raspberry Pi toolchain called `AgonDev`. It can also be run on Windows using WSL. 
 
-Download Windows (AgDev) from here: https://github.com/pcawte/AgDev
+AgonDev is still in active development and is getting more advanced every day.
 
-And Mac/Linux/Raspberry Pi (AgonDev) from here: https://github.com/AgonPlatform/agondev
+Download AgonDev from here: https://github.com/AgonPlatform/agondev/releases
 
 
 ### B Simple
@@ -67,7 +73,7 @@ Download B Simple from here: https://github.com/nihirash/bsimple-ez80-compiler
 
 ### Forth
 
-Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a _Jupiter Ace_, with its more obscure `Forth` programming language. 
+Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a _Jupiter Ace_, with its niche `Forth` programming language. 
 
 `Agon Forth` runs on the Agon itself and provides a great way to learn the language.
 
@@ -84,10 +90,10 @@ Download the latest version of the emulator: https://github.com/tomm/fab-agon-em
 
 If you have been building your Agon program on a PC (or Mac/Linux), there is a tool available called `Hexload` to help transfer the binary over to your Agon.
 
-Download from here: https://github.com/AgonPlatform/agon-hexload
+Further information and download from here: https://github.com/AgonPlatform/agon-hexload
 
 
-Good luck with your programming. There is lots of community help and support available on the `Agon & Console8 Community` Discord server.
+Good luck with your programming. There is lots of community help and support available on the _Agon & Console8 Community_ Discord server, link here: https://discord.com/invite/sN3vXru26s
 
 There are several getting started guides on the internet too, as well as YouTube videos, such as those from [https://www.youtube.com/@AgonBits] 
 
