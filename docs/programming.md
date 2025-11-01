@@ -14,8 +14,6 @@ It doesn't matter which model you own from the Agon platform range of computers,
 
 All languages listed here come with examples to help you get started.
 
-There are several getting started guides on the internet too, as well as YouTube videos, such as those from [https://www.youtube.com/@AgonBits] 
-
 
 
 ## The Languages
@@ -24,11 +22,17 @@ There are several getting started guides on the internet too, as well as YouTube
 
 This most popular language is installed by many Agon owners and is a great way to quickly start programming your Agon computer. 
 
+This is BBC BASIC from Richard Russell, and it has a direct line of heritage back to the original BBC Micro, and is based on the source code of the version from 1987 that ran on the Z80 second processor.
+
 The Agon port of BBC Basic provides a familiar yet powerful language used by beginners and experts alike. It runs directly on the Agon computer and is often started automaticaly by many users with a command in the `autoexec.txt` file.
 
 Download from here (16bit mode): https://github.com/breakintoprogram/agon-bbc-basic
 
 Download from here (ADL mode): https://github.com/breakintoprogram/agon-bbc-basic-adl
+
+In addition, there is a port of Richard Russell's BASIC V available. Although it runs in Z80 mode (ie. limited to 64k of memory), BASIC V includes several new keywords, and supports a handful of useful new programming structures.
+
+Download BASIC V from here: https://github.com/breakintoprogram/agon-bbc-basic-v
 
 
 ### Z80 Assembly
@@ -53,23 +57,38 @@ And Mac/Linux/Raspberry Pi (AgonDev) from here: https://github.com/AgonPlatform/
 
 ### B Simple
 
-_B_ was a language which, unsurpisingly, was around before _C_. This interpretation, `B Simple`, allows you to create programs that will be familliar to anyone who has used C, but without all the advanced features of C++. B Simple can be used on the Agon itslef, or on your desktop PC under Mac, Linux, Windows or Raspberry Pi. 
+_B_ was a language which, unsurpisingly, was around before _C_. This interpretation, `B Simple`, allows you to create programs that will be familliar to anyone who has used C, but without all the advanced features of C++. B Simple can be programmed on the Agon itslef, or on your desktop PC under Mac, Linux, Windows, or Raspberry Pi. 
 
-`B Simple`'s approach is to compile your code into z80 assembler, then use the power of `ez80asm` to assemble the compiled code into the final binary executable. It can eaasily be expanded by writing custom libraries in z80 assembler.
+`B Simple`'s approach is to compile your code into z80 assembler, then use the power of `ez80asm` (mentioned above) to assemble the compiled code into the final binary executable. 
+
+Whilst `B Simple` has a limited set of variable types, it is fast and easy to use. Plus, it can easily be expanded by writing custom libraries in z80 assembler.
 
 Download B Simple from here: https://github.com/nihirash/bsimple-ez80-compiler
 
 ### Forth
 
-Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a Jupiter Ace, with its more obscure _Forth_ programming language. 
+Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a _Jupiter Ace_, with its more obscure `Forth` programming language. 
 
 `Agon Forth` runs on the Agon itself and provides a great way to learn the language.
 
-Download Forth from here: https://github.com/lennart-benschop/agon-forth
+Download Agon Forth from here: https://github.com/lennart-benschop/agon-forth
 
 ## The Emulator
 
-While you are here, you may as well download the latest version of the emulator: https://github.com/tomm/fab-agon-emulator
+If you create your programs on your PC (or Mac/Linux), the Emulator enables you to test them right there, before dowbnloading to your Agon.
+There are some limitations, such as using additional hardwarde (eg. i2c devices, or io ports) but most other features are fully functional, and is updated regularly to keep in line with the latest Agon MOS/VDP operating system.
 
+Download the latest version of the emulator: https://github.com/tomm/fab-agon-emulator
+
+## Getting your code onto the Agon
+
+If you have been building your Agon program on a PC (or Mac/Linux), there is a tool available called `Hexload` to help transfer the binary over to your Agon.
+
+Download from here: https://github.com/AgonPlatform/agon-hexload
+
+
+Good luck with your programming. There is lots of community help and support available on the `Agon & Console8 Community` Discord server.
+
+There are several getting started guides on the internet too, as well as YouTube videos, such as those from [https://www.youtube.com/@AgonBits] 
 
 
