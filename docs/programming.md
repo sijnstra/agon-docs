@@ -65,15 +65,15 @@ Download [AgonDev](https://github.com/AgonPlatform/agondev/releases)
 
 _B_ was a language which, unsurpisingly, was around before _C_. This interpretation, `B Simple`, allows you to create programs that will be familliar to anyone who has used C, but without all the advanced features of C++. B Simple can be programmed on the Agon itslef, or on your desktop PC under Mac, Linux, Windows, or Raspberry Pi. 
 
-`B Simple`'s approach is to compile your code into z80 assembler, then use the power of `ez80asm` (mentioned above) to assemble the compiled code into the final binary executable. 
+B Simple's approach is to compile your code into z80 assembler, then use the power of `ez80asm` (mentioned above) to assemble the compiled code into the final binary executable. 
 
-Whilst `B Simple` has a limited set of variable types, it is fast and easy to use. Plus, it can easily be expanded by writing custom libraries in z80 assembler.
+Whilst B Simple has a limited set of variable types, it is fast and easy to use. Plus, it can easily be expanded by writing custom libraries in z80 assembler.
 
 Download [B Simple](https://github.com/nihirash/bsimple-ez80-compiler)
 
 ### Forth
 
-Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a _Jupiter Ace_, with its niche `Forth` programming language. 
+Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a _Jupiter Ace_, with its niche _Forth_ programming language. 
 
 `Agon Forth` runs on the Agon itself and provides a great way to learn the language.
 
