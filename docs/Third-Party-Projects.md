@@ -45,3 +45,8 @@ A selection of handy utilities including copy, compare, more, memfill, font, and
 
 Sokoban game for AGON
 
+## Vezza - Infocom Interpreter
+
+[https://sijnstra.itch.io/vezza-agon](https://sijnstra.itch.io/vezza-agon)
+
+Play all of the Infocom classics including Zork, along with many hundreds of other text adventrues and games. This z-machine interpreter also supports real-time games. More details and examples are available on the itch.io website above.
