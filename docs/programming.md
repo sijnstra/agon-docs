@@ -50,7 +50,7 @@ You can write your code in whatever text editor you like, then assmble your sour
 Download [ez80asm assembler](https://github.com/AgonPlatform/agon-ez80asm)
 
 
-### C++
+### C or C++
 
 Many programmers enjoy coding in `C` or `C++`. This language is also available and there are a few options for coding on your desktop PC, then compiling and transferring onto your Agon to run.
 
@@ -58,7 +58,7 @@ A whole development toolchain is available for for Mac/Linux/Raspberry Pi toolch
 
 AgonDev is still in active development and is getting more advanced every day.
 
-Download [AgonDev](https://github.com/AgonPlatform/agondev/releases)
+Download [AgonDev](https://github.com/AgonPlatform/agondev)
 
 
 ### B Simple
