@@ -109,13 +109,15 @@ This is identical to the BASIC `CLS` keyword.
 
 Moves the text cursor to the start (or column 0) of the current line.
 
-## `VDU 14`: Page mode On *
+## `VDU 14`: Paged mode On *
 
-When page mode is on, scrolling will stop after each page.  Output will be paused until "Shift" has been pressed on the keyboard.
+When paged mode is on, scrolling will stop after each page.  Output will be paused until "Shift" has been pressed on the keyboard.
 
-## `VDU 15`: Page mode Off *
+From VDP 2.14.0 onwards paged mode has been improved.  A page is no longer always a complete screen of output, but instead will keep up to 6 rows of context.  The VDP now also behaves better when paged mode is active, and will only pause continous output, not just when a certain number of rows has been printed.  Holding down the "Ctrl" key whilst text is being output will cause the VDP to pause briefly before every new line, allowing the user to skim through the text as it is printed (NB this works whether paged mode is enabled or not).  Holding both "Ctrl" and "Shift" will pause the output until either key is released.  You can customise how long the delay between lines will be when "Ctrl" is held, and how many lines of context will be shown through setting their corresponding [VDP variables](VDP-Variables.md).
 
-Disables page mode.  This is the default mode.
+## `VDU 15`: Paged mode Off *
+
+Disables paged mode.  This is the default mode.
 
 ## `VDU 16`: Clear graphics area (`CLG`)
 
@@ -222,9 +224,9 @@ Where `char_no` is the character number to re-program, and `r1` to `r8` are the 
 
 Please note that as of Console8 VDP 2.8.0 this form of the command will only work if the system font is the currently selected font.  For more information please see the [Font API](Font-API.md) documentation.
 
-Additionally, rather than re-programming the display character, there is also a function available to [remap the character to a bitmap](System-Commands.md#vdu-23-0-92-char-bitmapid-map-character-char-to-display-bitmapid-), allowing these font character replacements to be multi-coloured.
+Additionally, rather than re-programming the display character, there is also a function available to [remap the character to a bitmap](System-Commands.md#vdu-23-0-92), allowing these font character replacements to be multi-coloured.
 
-Note: There is a related VDU 23 System Command which can [program the entire character range 0-255](System-Commands.md#vdu-23-0-90-n-b1-b2-b3-b4-b5-b6-b7-b8-redefine-character-n-0-255-with-8-bytes-of-data-), and a reset command is also available to [reset the system font](System-Commands.md#vdu-23-0-91-reset-all-characters-to-original-definition-) back to default.
+Note: There is a related VDU 23 System Command which can [program the entire character range 0-255](System-Commands.md#vdu-23-0-90), and a reset command is also available to [reset the system font](System-Commands.md#vdu-23-0-91) back to default.
 
 The second purpose of this command is to send system commands to the VDP.
 

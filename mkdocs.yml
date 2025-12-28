@@ -17,7 +17,7 @@
 #
 
 site_name: "Community Agon Platform documentation"
-repo_url: https://github.com/AgonConsole8/agon-docs
+repo_url: https://github.com/AgonPlatform/agon-docs
 repo_name: contribute
 edit_uri: edit/main/docs/
 theme:
@@ -28,30 +28,34 @@ theme:
     - navigation.sections
     - navigation.expand
     - navigation.instant
-    - navigation.instant.preview
     - navigation.top
     - search.suggest
     - search.highlight
     - content.tabs.link
     - content.code.annotate
-    - content.code.annotation
     - content.code.copy
     - content.footnote.tooltips
     - content.action.edit
   language: en
   palette:
-    - scheme: default
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
       primary: deep purple
       accent: purple
-    - scheme: slate
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       toggle:
         icon: material/toggle-switch
-        name: switch to light mode
-        primary: deep purple
-        accent: lime
+        name: Switch to your system preference
+      primary: deep purple
+      accent: lime
 
 extra_css:
   - stylesheets/extra.css
@@ -61,9 +65,16 @@ nav:
     - 'Start here': index.md
     - 'FAQ': FAQ.md
     - 'Theory of operation': Theory-of-operation.md
+    - 'Programming': programming.md
   - 'MOS':
-      - 'Command line': MOS.md
-      - 'API': MOS-API.md
+      - 'Overview': MOS.md
+      - 'Command line': mos/Star-Commands.md
+      - 'API': mos/API.md
+      - 'C functions': mos/C-Functions.md
+      - 'Executable format': mos/Executables.md
+      - 'Modules': mos/Modules.md
+      - 'System Variables': mos/System-Variables.md
+      - 'Argument Substitution': mos/Argument-Substitution.md
   - 'VDP':
     - 'Overview': VDP.md
     - 'Main Commands': vdp/VDU-Commands.md
@@ -75,13 +86,14 @@ nav:
     - 'Buffered Commands API': vdp/Buffered-Commands-API.md
     - 'Context Management API': vdp/Context-Management-API.md
     - 'Font Management API': vdp/Font-API.md
+    - 'VDP Variables': vdp/VDP-Variables.md
+    - 'Copper Effects API': vdp/Copper-API.md
     - 'Tile Engine': vdp/Tile-Engine.md
 
   - 'BBC Basic': BBC-BASIC-for-Agon.md
   - 'GPIO': GPIO.md
   - 'Guides':
-    - 'Updating Firmware': Updating-Firmware-from103.md
-    - 'Updating Firmware (prio v1.03)': Updating-Firmware.md
+    - 'Updating Firmware': Updating-Firmware.md
   - 'Additional resources':
     - 'External documentation': External-Documentation.md
     - 'Third party projects': Third-Party-Projects.md
@@ -104,3 +116,9 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.mark
   - attr_list
+  - toc:
+      toc_depth: "2-5"
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg

@@ -14,9 +14,10 @@ Please note that not all versions of the VDP support the complete command set.  
  §§§§ Requires Console8 VDP 2.7.0 or above<br>
  §§§§§ Requires Console8 VDP 2.8.0 or above<br>
  §§§§§§ Requires Console8 VDP 2.9.0 or above<br>
- §§§§§§§ Requires Console8 VDP X.X.X or above<br>
+ §§§§§§§ Requires Console8 VDP 2.12.0 or above<br>
+ §§§§§§§§ Requires Console8 VDP 2.14.0 or above<br>
 
-Commands between &80 and &89 will return their data back to the eZ80 via the [serial protocol](#serial-protocol).
+Commands between &80 and &89 will return their data back to the eZ80 via the [VDP serial protocol](#vdp-serial-protocol).
 
 NB:
 
@@ -54,7 +55,7 @@ If the start and end lines are equal then the cursor will be drawn as a horizont
 
 ## `VDU 23, 0, &80, n`: General poll
 
-This command will echo back `n` to MOS (see [Serial Protocol](#serial-protocol))
+This command will echo back `n` to MOS (see [VDP Serial Protocol](#vdp-serial-protocol))
 
 This command is used by MOS and the VDP to synchronise with each other during the system start-up process.  It is not intended to be used by applications.
 
@@ -87,7 +88,7 @@ Any other value will be interpreted as UK.
 
 ## `VDU 23, 0, &82`: Request text cursor position
 
-This command will return the current text cursor position to MOS.  Once the cursor position has been returned the text cursor position data inside MOS's system variables will be updated to reflect the current cursor position.
+This command will return the current text cursor position to MOS.  Once the cursor position has been returned the text cursor position data inside MOS's [system state variables](../mos/API.md#sysvars) will be updated to reflect the current cursor position.
 
 ## `VDU 23, 0, &83, x; y;`: Get ASCII code of character at character position x, y
 
@@ -99,7 +100,7 @@ This command will not recognise characters that have been mapped to bitmaps usin
 
 ## `VDU 23, 0, &84, x; y;`: Get colour of pixel at pixel position x, y
 
-This command will return the colour of the pixel at the given pixel position to MOS.  The corresponding MOS system variables will be updated to reflect the read pixel colour.
+This command will return the colour of the pixel at the given pixel position to MOS.  The corresponding [MOS sysvars](../mos/API.md#sysvars) will be updated to reflect the read pixel colour.
 
 ## `VDU 23, 0, &85, channel, command, <args>`: Audio commands
 
@@ -116,7 +117,7 @@ Returns the screen dimensions to MOS.  Generally applications should not need to
 This command controls the Real Time Clock within the Agon VDP.
 
 - `VDU 23, 0, &87, 0`: Read the RTC
-  - a data packet will be sent to MOS with the current RTC data, and MOS system variables updated accordingly
+    - a data packet will be sent to MOS with the current RTC data, and [MOS sysvars](../mos/API.md#sysvars) updated accordingly
 
 - `VDU 23, 0, &87, 1, y, m, d, h, m, s`: Set the RTC
 
@@ -228,7 +229,7 @@ Sets the wheel acceleration factor to a 24-bit value.  Setting the value to `0` 
 
 ### Mouse data packets
 
-Mouse data packets are sent in response to all of the above commands, and if the mouse has been enabled whenever the mouse is moved.  This ensures that mouse data is constantly updated in MOS system variables.
+Mouse data packets are sent in response to all of the above commands, and if the mouse has been enabled whenever the mouse is moved.  This ensures that mouse data is constantly updated in [MOS sysvars](../mos/API.md#sysvars).
 
 
 ## `VDU 23, 0, &8A, n`: Set the cursor start column §§§§
@@ -253,17 +254,17 @@ This command will move the text cursor by the given number of pixels in the X an
 
 Normal cursor scrolling and wrapping behaviour will be obeyed, depending on the currently set cursor behaviour.
 
-## `VDU 23, 0, &90, n, b1, b2, b3, b4, b5, b6, b7, b8`: Redefine character n (0-255) with 8 bytes of data §
+## `VDU 23, 0, &90, n, b1, b2, b3, b4, b5, b6, b7, b8`: Redefine character n (0-255) with 8 bytes of data § {#vdu-23-0-90}
 
 This command works identically to `VDU 23, n, b1, b2, b3, b4, b5, b6, b7, b8`, but allows characters 0-31 to also be redefined.
 
 NB from Console8 VDP 2.8.0 this command will only function if the currently selected font is the system font.
 
-## `VDU 23, 0, &91`: Reset all system font characters to original definition §
+## `VDU 23, 0, &91`: Reset all system font characters to original definition § {#vdu-23-0-91}
 
 This command will reset all system font characters to their original definitions.
 
-## `VDU 23, 0, &92, char, bitmapId;`: Map character char to display bitmapId §§
+## `VDU 23, 0, &92, char, bitmapId;`: Map character char to display bitmapId §§ {#vdu-23-0-92}
 
 This command will map a character to a bitmap.  The bitmap ID given must be a valid bitmap in a 16 bit buffer ID.  The purpose of this command is to allow for fast and efficient drawing of bitmaps to the screen, by allowing them to be drawn as characters.
 
@@ -285,7 +286,7 @@ This command will not recognise characters that have been mapped to bitmaps usin
 
 ## `VDU 23, 0, &94, n`: Read colour palette entry n (returns a pixel colour data packet) §§
 
-This command will return the colour of the given palette entry to MOS.  This data is sent using a "screen pixel" data packet.  The corresponding MOS system variables related to screen pixel colour will be updated to reflect the read palette entry.
+This command will return the colour of the given palette entry to MOS.  This data is sent using a "screen pixel" data packet.  The corresponding [MOS sysvars](../mos/API.md#sysvars) related to screen pixel colour will be updated to reflect the read palette entry.
 
 The Agon VDP system supports a 64 colour palette, so values in the range of 0-63 will return data on that palette entry.  The following special values are also supported:
 
@@ -340,6 +341,18 @@ Irrespective of whether the VDP has done anything with a control key, or whether
 Until Console8 VDP 2.6.0, this control key behaviour on the VDP was always enabled, and could not be turned off.
 
 From Console8 VDP 2.6.0 onwards, the control keys can be turned off, which may help ensure that unexpected behaviour on the VDP does not occur when using applications running on MOS that may also wish to use these control key combinations.
+
+## `VDU 23, 0, &99, virtualKey`: Request updated keyboard data for a key §§§§§§§
+
+This command will send an updated keycode data packet to MOS with the current state of the given key, using a vdp-gl/fab-gl virtual key code.  Usually you should not have to use this command, as the keyboard data packets are sent automatically whenever a key is pressed or released.
+
+(This command is used by MOS 3.0 at boot time to determine if the left shift key is pressed to signals that the boot file should not be run from the SD card.)
+
+## `VDU 23,0, &9A`: Temporarily enable paged mode §§§§§§§§ {#vdu-23-0-9a}
+
+This command temporarily enables the VDP's "paged mode", as if a `VDU 14` command had been sent.  Temporary paged mode remains active until one frame after the VDP no longer has any VDU commands to process, at which point the paged mode is restored to its previous setting.
+
+This command is useful for applications that need to temporarily enable paged mode, but do not want to change the paged mode setting for the VDP permanently.  For example, MOS 3.0 uses this command to ensure that star commands that can output a lot of text to screen will be automatically paged.
 
 ## `VDU 23, 0, &9B, bufferId;`: Print the contents of a buffer to the screen §§§§§§
 
@@ -408,6 +421,12 @@ Waiting for VSYNC can be useful for ensuring smooth graphical animation, as it w
 
 (In BASIC performing a `*FX 19` command will perform a similar wait for VSYNC, but on the eZ80 side of the system, but will not swap the screen buffer.)
 
+## `VDU 23, 0, &C4, command, [<args>]`: "Copper" functions §§§§§§§
+
+Send a command to the [VDP Copper API](Copper-API.md).  This allows for the creation of different palettes and for the palettes to be changed on the fly during the scanout of the screen.
+
+These functions were introduced in VDP 2.12.0.  At this time, to access these APIs a feature flag must be set using `VDU 23, 0, &F8, &310; 0;`.  The exact feature set provided may be subject to change in future versions of the VDP firmware.
+
 ## `VDU 23, 0, &C8, <command>, [<args>]`: Context management API §§§§§
 
 Send a command to the [Context Management API](Context-Management-API.md).  This allows management of the current graphics context, which includes the current font, text and graphics colours, and the current GCOL paint mode.
@@ -430,23 +449,19 @@ The line pattern can be set using `VDU 23, 6, n1, n2, n3, n4, n5, n6, n7, n8`, w
 
 Support for this command was added in Console8 VDP 2.7.0.
 
-## `VDU 23, 0, &F8, flagId; value;`: Set a test flag §§§§§§
+## `VDU 23, 0, &F8, variableId; value;`: Set a VDP Variable §§§§§§
 
-This command is used to set a test flag.  Test flags are used to enable new and experimental features in the VDP that may not be quite ready for general use, and/or have an API that may change in the future.  They are intended for use by developers and testers.
+This command is used to set a [VDP variable](VDP-Variables.md).  VDP variables are used to control various features of the VDP, including enabling new functionality that may not quite be ready for general use and/or have an API that may change in the future.  They may also allow for changing various aspects of the VDP's behaviour.
 
-The `flagId` is the ID of the flag to set, and the `value` is the value to set the flag to.  The meaning of the `value` that any particular flag is set to will be specific to the flag being set.  A value must always be provided, even if the flag does not require a value to be set.
+The `variableId` is the ID of the variable to set, and the `value` is the value to set it to.  The meaning of the `value` that any particular variable is set to will be specific to the flag being set.  A value must always be provided, even if the variable does not require a value to be set.
 
-As of Console8 VDP 2.9.0 the following test flags are supported:
+For details on the variables that can be set, see the [VDP Variables documentation](VDP-Variables.md).
 
-| Flag ID | Value | Description |
-| ------- | ----- | ----------- |
-| 1 | 0 (N/A) | Enable the Affine Transforms feature |
+## `VDU 23, 0, &F9, variableId;`: Clear a VDP Variable §§§§§§
 
-If a flag is set that is not recognised then it will have no effect.  This means that if a feature graduates from being a test feature then so long as the API for the feature remains the same, then software that set the flag to enable the feature will still work.
+This command is used to clear a VDP variable, removing them from the variable store, when possible.
 
-## `VDU 23, 0, &F9, flagId;`: Clear a test flag §§§§§§
-
-This command is used to clear a test flag.
+Most VDP variables that reflect the system state information cannot be cleared, and this command will ignored attempts to clear them.
 
 ## `VDU 23, 0, &FE, n`: Console mode **
 
@@ -478,17 +493,17 @@ Suspending terminal mode temporarily restores VDU command processing.  (Keyboard
 
 
 
-## Serial Protocol
+## VDP Serial Protocol
 
 Data sent from the VDP to the eZ80's UART0 is sent as a packet in the following format:
 
-- cmd: The packet command, with bit 7 set
-- len: Number of data bytes
-- data: The data byte(s)
+- `cmd`: The packet command, with bit 7 set
+- `len`: Number of data bytes
+- `data`: The data byte(s)
 
 Words are 16 bit, and sent in little-endian format
 
-In general, as a programmer using an Agon you should not need to worry about the format and contents of any of these packets, as they are handled by MOS.  On receipt of one of these packets, MOS will set system variables accordingly.  It also sets a bit in the VDPProtocol status byte corresponding to the type of data packet received.
+In general, as a programmer using an Agon you should not need to worry about the format and contents of any of these packets, as they are handled by MOS.  On receipt of one of these packets, MOS will set [system state variables (sysvars)](../mos/API.md#sysvars) accordingly.  It may also set a bit in the VDPProtocol status byte sysvar corresponding to the type of data packet received.
 
 If you are performing a command where you need to wait for a response from the VDP, then you will need to wait for the appropriate bit to be set in the VDP protocol byte.  Before you send a command to the VDP you should clear the bit that relates to the command you are about to send.  Once the command has been processed the VDP will set the bit again.  If the bit is not set then there may have been an error processing the command.
 
@@ -505,7 +520,7 @@ Packets:
 - `0x08, delay, rate, led`: Keyboard status - delay and rate are words
 - `0x09, x; y; buttons, wheelDelta, deltaX; deltaY;`: Mouse status - x, y, deltaX and deltaY are words
 
-\* as of VDP 1.04 the RTC data is sent in a packed format.  This is interpreted by MOS and expanded into the appropriate system variables.  Prior to VDP 1.04 the `dayOfYear` value could be incorrect, as it cannot be guaranteed to fit into a byte.
+\* as of VDP 1.04 the RTC data is sent in a packed format, and is stored in the [MOS sysvars](../mos/API.md#sysvars) in this packed format.  Prior to VDP 1.04 the `dayOfYear` value could be incorrect, as it cannot be guaranteed to fit into a byte.
 
 MOS VDP Protocol flag bits:
 
