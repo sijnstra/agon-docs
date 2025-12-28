@@ -18,71 +18,71 @@ All languages listed here come with examples to help you get started.
 
 ## The Languages
 
-### Basic
+### BBC BASIC
 
-This most popular language is installed by many Agon owners and is a great way to quickly start programming your Agon computer. 
+This popular language is installed by many Agon owners and is a great way to quickly start programming your Agon computer.  Many of the examples in this documentation for the VDP's VDU commands are written in BBC BASIC.
 
-This is BBC BASIC from Richard Russell, and it has a direct line of heritage back to the original BBC Micro, and is based on the source code of the version from 1987 that ran on the Z80 second processor.
+The Z80 version of BBC BASIC was first created by Richard Russell for Acorn's Z80 second processor for the BBC Micro in the 1980's.  It was also available on CP/M systems, and has since spawned [many other versions](https://www.rtrussell.co.uk/).  The Z80 BBC BASIC was designed to be compatible with Acorn's 6502-based BBC BASIC versions 2, 3 and 4 for the original BBC Micro model B, B+ and Master series of computers.  It is almost completely compatible with the BBC Master's BBC BASIC 4, with only some very minor exceptions.
 
-The Agon port of BBC Basic provides a familiar yet powerful language used by beginners and experts alike. It runs directly on the Agon computer and is often started automatically by many users with a command in in their system boot script `./MOS.md#boot-script`.
+The original source for the 1987 BBC Micro Z80 second processor BBC BASIC was made open source by Richard Russell several years ago, and was ported to the Agon by Dean Belfield as part of the original Quark firmware.
 
-BBC Basic is available in two versions: Z80 version with a memory limit of 64k, and ADL version using all memory available.
+The Agon ports of BBC BASIC provide a familiar yet powerful language used by beginners and experts alike. It runs directly on the Agon computer and is often started automatically by many users with a command in their [system boot script](./MOS.md#boot-script).
 
-More information on [Z80 version](https://github.com/breakintoprogram/agon-bbc-basic) or [ADL version](https://github.com/breakintoprogram/agon-bbc-basic-adl)
+There are two versions of BBC BASIC available for the Agon, based on the original Z80 version.  Firstly there is the [pure Z80 version](https://github.com/breakintoprogram/agon-bbc-basic), which runs in Z80 mode and is limited to 64k of memory.  Secondly there is an [ADL version](https://github.com/breakintoprogram/agon-bbc-basic-adl), which has been converted to use the Agon eZ80's ADL mode.  This allows it to both access all 512kb of available memory on your Agon, and the inbuilt assembler has been extended to support the eZ80's new instructions.
 
-Or, for a quick update of your current version:
+The latest release of the Z80 version of BBC BASIC can be [downloaded here](https://github.com/breakintoprogram/agon-bbc-basic/releases/latest), and the ADL version can be [downloaded here](https://github.com/breakintoprogram/agon-bbc-basic-adl/releases/latest).
 
-Download the [Z80 version](https://github.com/breakintoprogram/agon-bbc-basic/releases/latest)
+In late 2024 Richard Russell revisited his Z80 BBC BASIC and updated it to include many new features that Acorn added to BBC BASIC V for the Acorn Archimedes and RISC OS, which many of his other versions of BBC BASIC already supported.  This includes support for new structured programming constructs, as well as several other new keywords to simplify programming.
 
-Download the [ADL version](https://github.com/breakintoprogram/agon-bbc-basic-adl/releases/latest)
-
-In addition, there is a port of Richard Russell's BASIC V available. Although it runs in Z80 mode (ie. limited to 64k of memory), BASIC V includes several new keywords, and supports a handful of useful new programming structures.
-
-Download [BASIC V](https://github.com/breakintoprogram/agon-bbc-basic-v)
+[BASIC V](https://github.com/breakintoprogram/agon-bbc-basic-v) has also been ported to run on the Agon by Dean Belfield.  At this time it only runs in Z80 mode and so is limited to using only 64kb memory.  It can be [downloaded here](https://github.com/breakintoprogram/agon-bbc-basic-v/releases/latest).
 
 
 ### Z80 Assembly
 
 If you have ever written software in z80 Assembly for the Sinclair ZX81, ZX Spectrum, MSX, Amstrad CPC, TRS-80, Nintendo Game Boy, or even the Texas Instruments calulators, then this will be familliar territory for you.
 
-You can write your code in whatever text editor you like, then assmble your source code with `ez80asm`, a z80 assembler which runs on the Agon itself, or on Mac, Windows, Linux, and even Raspberry Pi.
+As well as the assembler built into BBC BASIC, there is also a dedicated assembler available in the form of [`ez80asm`](https://github.com/AgonPlatform/agon-ez80asm).
 
-Download [ez80asm assembler](https://github.com/AgonPlatform/agon-ez80asm)
+You can write your code in whatever text editor you like, then assmble your source code with `ez80asm`.  The assembler can be run natively on the Agon itself, or on Mac, Windows, Linux, and even Raspberry Pi.
+
+The latest version of this assembler can be [downloaded here](https://github.com/AgonPlatform/agon-ez80asm/releases/latest).
 
 
 ### C or C++
 
-Many programmers enjoy coding in `C` or `C++`. This language is also available and there are a few options for coding on your desktop PC, then compiling and transferring onto your Agon to run.
+Many programmers enjoy coding in C or C++. This language is also available and there are a few options for coding on your desktop PC, then compiling and transferring onto your Agon to run.
 
-A whole development toolchain is available for for Mac/Linux/Raspberry Pi toolchain called `AgonDev`. It can also be run on Windows using WSL. 
+[AgonDev](https://github.com/AgonPlatform/agondev) is a modern development toolchain for the Agon based on LLVM and the GNU AS assembler.  Releases are available for ARM-based Macs, and for ARM and x86_64 Linux systems.  Windows users can run AgonDev under WSL (Windows Subsystem for Linux).
 
 AgonDev is still in active development and is getting more advanced every day.
 
-Download [AgonDev](https://github.com/AgonPlatform/agondev)
+The latest version of AgonDev can be [downloaded here](https://github.com/AgonPlatform/agondev/releases/latest).
 
 
 ### B Simple
 
-_B_ was a language which, unsurpisingly, was around before _C_. This interpretation, `B Simple`, allows you to create programs that will be familliar to anyone who has used C, but without all the advanced features of C++. B Simple can be programmed on the Agon itslef, or on your desktop PC under Mac, Linux, Windows, or Raspberry Pi. 
+B was a language which, unsurpisingly, was around before C, and was based on the earlier BCPL.
 
-B Simple's approach is to compile your code into z80 assembler, then use the power of `ez80asm` (mentioned above) to assemble the compiled code into the final binary executable. 
+[B Simple](https://github.com/nihirash/bsimple-ez80-compiler) is inspired by the original B language.  It is a general purposes typeless compiled language that should be familiar to C programmers.
+
+B Simple's approach is that of a cross-compiler, converting your B Simple source code first into eZ80 assembly language and then assembling that using `ez80asm` into a binary executable that can run on your Agon computer. 
 
 Whilst B Simple has a limited set of variable types, it is fast and easy to use. Plus, it can easily be expanded by writing custom libraries in z80 assembler.
 
-Download [B Simple](https://github.com/nihirash/bsimple-ez80-compiler)
+B Simple is available to run on your Agon computer directly, as well as on Mac, Windows or Linux computers.  The latest version can be [downloaded here](https://github.com/nihirash/bsimple-ez80-compiler/releases/latest).
 
 ### Forth
 
-Some Agon users might reminisce on the days long gone of owning (or wishing they owned) a _Jupiter Ace_, with its niche _Forth_ programming language. 
+The [Forth programming language](https://en.wikipedia.org/wiki/Forth_(programming_language)) is a stack-based language which is quite different from most other programming languages.  In the early days of home computing it was quite popular on some niche systems, and was used as the operating system on the [Jupiter ACE](https://en.wikipedia.org/wiki/Jupiter_Ace).
 
-`Agon Forth` runs on the Agon itself and provides a great way to learn the language.
+It's different approach to programming appeals to many programmers, and there is a dedicated community of Forth programmers around the world.  Forth programs can be very efficient, and the compact nature of the core language makes it ideal as the first language for new computer systems.
 
-Download [Agon Forth](https://github.com/lennart-benschop/agon-forth)
+[Agon Forth](https://github.com/lennart-benschop/agon-forth) runs on the Agon itself and provides a great way to learn the language.  It has versions available for both Z80 and eZ80 modes, and includes several libraries and example programs to help you get started.
 
 ## The Emulator
 
-If you create your programs on your PC (or Mac/Linux), the Emulator enables you to test them right there, before dowbnloading to your Agon.
-There are some limitations, such as using additional hardwarde (eg. i2c devices, or io ports) but most other features are fully functional, and is updated regularly to keep in line with the latest Agon MOS/VDP operating system.
+If you create your programs on your PC (or Mac/Linux), the Emulator enables you to test them right there, before downloading to your Agon.
+There are some limitations, such as using additional hardware (eg. i2c devices, or io ports) but most other features are fully functional, and is updated regularly to keep in line with the latest Agon MOS/VDP operating system.
 
 Download the latest version of [The Agon Emulator](https://github.com/tomm/fab-agon-emulator)
 
