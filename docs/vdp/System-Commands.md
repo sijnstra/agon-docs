@@ -404,6 +404,13 @@ By default, the original screen modes 0-4 are not available and are instead repl
 
 For more information, see the [Screen modes documentation](Screen-Modes.md).
 
+## `VDU 23, 0, &C2, <command>, [<args>]`: Tile Engine §§§§§§§
+
+Sends a command to the Tile Engine.
+
+For more information, see the [Tile Engine](Tile-Engine.md) documentation.
+
+
 ## `VDU 23, 0, &C3`: Swap the screen buffer and/or wait for VSYNC **
 
 Swap the screen buffer (double-buffered modes only) or wait for VSYNC (all modes).
