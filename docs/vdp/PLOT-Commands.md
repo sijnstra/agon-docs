@@ -178,7 +178,7 @@ If any other VDU commands are received after a "Fill path" PLOT command, then th
 As a result of this mode of operation, it is not possible to interactively enter multiple "fill path" PLOT commands one after another at the BASIC command prompt using separate commands over multiple lines, as the system will interpret the character output for command entry as closing the current path.  Instead filled paths must be defined in a single command sequence, uninterrupted by other VDU commands, usually as part of a program.
 
 
-## Bitmap plots (PLOT codes &E8-&EF)
+## Bitmap plots (PLOT codes &E8-&EF) {#bitmap-plot}
 
 Bitmap plots will draw the currently selected bitmap to the screen.
 

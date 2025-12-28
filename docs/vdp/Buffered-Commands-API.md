@@ -1,7 +1,7 @@
 VDP Buffered Commands API
 =========================
 
-The VDP Buffered Commands API is a low-level API that allows for the creation of buffers on the VDP.  These buffers can be used for sequences of commands for later execution, storing data, capturing output from the VDP, as well as storing bitmaps, sound samples and fonts.
+The VDP Buffered Commands API is a low-level API that allows for the creation of buffers on the VDP.  These buffers can be used for sequences of commands for later execution, storing data, as well as storing bitmaps, sound samples and fonts.
 
 Through the use of the APIs, it is possible to both send commands to the VDP in a "packetised" form, as well as to have "functions" or "stored procedures" that can be saved on the VDP and executed later.
 
@@ -27,11 +27,13 @@ At this time the VDP Buffered Commands API does not send any messages back to MO
 
 This command is used to store a data block (a sequence of bytes) in a buffer on the VDP.  The exact nature of this data may vary.  It could be a sequence of VDU commands which can be executed later, a bitmap, a sound sample, or just a sequence of bytes.  When used for a sequence of VDU commands, this effectively allows for functions or stored procedures to be created.
 
-This is the most common command to use to send data to the VDP.  Typically you will call command 2 first to ensure that the buffer is empty, and then make a series of calls to this command to send data to the buffer.
+This is the most common command to use to send data to the VDP.  Typically you will call [command 2](#command-2) first to ensure that the buffer is empty, and then make a series of calls to this command to send data to the buffer.  You can also use this command to save a sequence of commands to a buffer for later execution using [command 1](#command-1).
+
+NB you do not need to "create a buffer" before writing blocks to it; buffers are created automatically when the first block is written to them.
 
 The `bufferId` is a 16-bit integer that identifies the buffer to write to.  Writing to the same buffer ID multiple times will add new blocks to that buffer.  This allows a buffer to be built up over time, essentially allowing for a command to be sent across to the VDP in multiple separate packets.
 
-Whilst the length of an individual block added using this command is restricted to 65535 bytes (as the largest value that can be sent in a 16-bit number) the total size of a buffer is _not_ restricted to this size, as multiple blocks can be added to a buffer.  Given how long it takes to send data to the VDP it is advisable to send data across in smaller chunks, such as 1kb of data or less at a time.
+Whilst the length of an individual block added using this command is restricted to 65535 bytes (as the largest value that can be sent in a 16-bit number) the total size of a buffer, or a block within a buffer, is _not_ restricted to this size, as multiple blocks can be added to a buffer, and blocks can be [consolidated](#command-14).  Given how long it takes to send data to the VDP it is advisable to send data across in smaller chunks, such as 1kb of data or less at a time.
 
 As writing to a single buffer ID is cumulative with this command, care should be taken to ensure that the buffer is cleared out before writing to it.
 
@@ -41,9 +43,9 @@ As mentioned above it is advisable to send large pieces of data, such as bitmaps
 
 If a buffer ID of 65535 is used then this command will be ignored, and the data discarded.  This is because this buffer ID is reserved for special functions.
 
-### Using buffers for bitmaps
+### Using buffers for bitmaps {#bitmap-buffers}
 
-Whilst it is advisable to send bitmaps over in multiple blocks, they cannot be _used_ if they are spread over multiple blocks.  To use a bitmap its data must be in a single contiguous block, and this is achieved by using the "consolidate" command `&0E`.
+Whilst it is advisable to send bitmaps over in multiple blocks, they cannot be _used_ if they are spread over multiple blocks.  To use a bitmap its data must be in a single contiguous block, and this is achieved by using the ["consolidate blocks" command](#command-14).
 
 Once you have a block that is ready to be used for a bitmap, the buffer must be selected, and then a bitmap created for that buffer using the bitmap and sprites API.  This is done with the following commands:
 
@@ -62,7 +64,7 @@ Until the "create bitmap" call has been made the buffer cannot be used as a bitm
 | 1     | RGBA2222 | RGBA, 2-bits per channel, with bits ordered from highest bits as alpha, blue, green and red |
 | 2     | Mono/Mask | Monochrome, 1-bit per pixel |
 
-The existing bitmap API uses an 8-bit number to select bitmaps, and these are automatically stored in buffers numbered 64000-64255 (`&FA00`-`&FAFF`).  Working out the buffer number for a bitmap is simply a matter of adding 64000.  All bitmaps created with that API will be RGBA8888 format.
+You should note that some [bitmap API commands](Bitmaps-API.md) use an 8-bit number to reference bitmaps.  These are automatically mapped to buffers numbered in the range 64000-64255 (`&FA00`-`&FAFF`).  Working out the buffer number for a bitmap is simply a matter of adding 64000.
 
 There is one other additional call added to the bitmap and sprites API, which allows for bitmaps referenced with a buffer ID to be added to sprites.  This is done with the following command:
 
@@ -74,7 +76,7 @@ This command otherwise works identically to `VDU 23, 27, 6`.
 
 It should be noted that it is possible to modify the buffer that a bitmap is stored in using the "adjust buffer contents" and "reverse contents" commands (`5` and `24` respectively).  This can allow you to do things such as changing colours in a bitmap, or flipping an image horizontally or vertically.  This will even work on bitmaps that are being used inside sprites.
 
-Using commands targeting a buffer that create new blocks, such as "consolidate" or "split", will invalidate the bitmap and remove it from use.
+Using commands targeting a buffer that creates new blocks after a buffer has been designated as a bitmap, such as this command, ["consolidate"](#command-14) or ["split"](#command-15), will invalidate the bitmap and remove it from use.
 
 ### Using buffers for sound samples
 
@@ -105,9 +107,23 @@ VDU 23, 0, &85, channel, 4, 8, bufferId;
 
 Samples uploaded using the existing "load sample" command (`VDU 23, 0, &85, sampleNumber, 5, 0, length; lengthHighByte, <sample data>`) are also stored in buffers automatically.  A sample number using this system is in the range of -1 to -128, but these are stored in the range 64256-64383 (`&FB00`-`&FB7F`).  To map a number to a buffer range, you need to negate it, subtract 1, and then add it to 64256.  This means sample number -1 is stored in buffer 64256, -2 is stored in buffer 64257, and so on.
 
-## Command 1: Call a buffer
+### Using buffers for command sequences
 
-`VDU 23, 0 &A0, bufferId; 1`
+Buffers are particularly useful for storing sequences of VDU commands that can be executed later.  Having a buffer full of commands can be thought of as a "function" or "stored procedure" that can be called later.  This can have significant performance advantages, as calling a buffer of commands is much faster than sending the same commands across from MOS to the VDP each time they are needed.
+
+Storing commands is as simple as sending `VDU 23, 0, &A0, bufferId; 0, length;` and then just performing the VDU commands you wish to be stored as normal.  Instead of those commands being executed immediately they will be saved in the buffer instead.
+
+The main difficulty in storing command sequences in buffers is working out the `length` parameter, as VDU commands can vary in length.  Using a `length` value that is too short means some bytes will not get stored in the buffer, so the last command may be incomplete, and those bytes will instead get interpreted as commands by the main VDU command processor, likely resulting in unexpected behaviour.  Conversely a `length` that is too long means bytes from subsequent commands that you had intended to be sent to the VDP's command processor will instead get stored in the buffer until that buffer is full, again resulting in unexpected behaviour.
+
+There are two strategies that can help here.
+
+Firstly splitting complicated command sequences across multiple blocks can make it easier to work out the length of each block.  It's much simpler to count up the bytes used for a small number of commands than to work out the entire length of a long sequence of commands.  When executing a buffer there is no performance penalty between having a single long block of commands, or multiple smaller blocks.  This approach can also make it easier to modify command sequences later, as you can just change a single block rather than having to recalculate the length of an entire sequence.  It is however still quite easy to mis-count the number of bytes in a block, so care should still be taken.
+
+Secondly, instead of accurately calculating exactly how many bytes needed for the sequence you wish to save in a block one can instead choose an estimated length that is longer than is actually needed.  After sending the sequence of commands you wish to be saved, to ensure the block is definitely filled you can then send extra [null commands](./VDU-Commands.md#vdu-0) (`VDU 0`, which are `0` bytes) to pad out the block to the required length.  Conservatively, just sending as many zero bytes as the block length you have specified safely ensures that the block will be filled.  The VDP's command processor essentially ignores the extra zero bytes beyond those being stored in the block, and when executing the block the stored extra zero bytes will also be ignored.
+
+## Command 1: Call a buffer {#command-1}
+
+`VDU 23, 0, &A0, bufferId; 1`
 
 This command will attempt to execute all of the commands stored in the buffer with the given ID.  If the buffer does not exist, or is empty, then this command will do nothing.
 
@@ -133,7 +149,7 @@ Calling this command with a `bufferId` value of -1 (65535) will clear out all bu
 
 `VDU 23, 0 &A0, bufferId; 3, length;`
 
-NB it is quite rare that you will want to use this command.  In general, new buffers are best created using the [write buffer](#command-0) command.  You do not need to use this command to create a buffer before using the [write buffer](#command-0) command; doing so will usually lead to errors as you will end up with _two_ blocks in the buffer, the first of which will be empty.  The use of this command to create a buffer in which to store reference data can largely be replaced through the use of [VDP Variables](./VDP-Variables.md).
+NB it is incredibly rare that you will want to use this command.  In general, new buffers are best created using the [write buffer](#command-0) command.  You do not need to use this command to create a buffer before using the [write buffer](#command-0) command; doing so will usually lead to errors as you will end up with _two_ blocks in the buffer, the first of which will be empty.  The use of this command to create a buffer in which to store reference data can largely be replaced through the use of [VDP Variables](./VDP-Variables.md).
 
 This command will create a new writeable buffer with the given ID.  If a buffer with the given ID already exists then this command will do nothing; you may therefore wish to [clear the buffer](#command-2) first before using this command.  This command was primarily intended for use to create a buffer that can be used to capture output using the ["set output stream"](#command-4) command, or to store data that can be used for other commands.
 
@@ -141,7 +157,7 @@ If you do wish to use this command to create a buffer to store program data, aft
 
 This new buffer will be a single empty single block upon creation, containing zeros.
 
-The `length` parameter is a 16-bit integer that specifies the maximum size of the buffer.  This is the maximum number of bytes that can be stored in the buffer.  If the buffer is full then no more data can be written to it, and subsequent writes will be ignored.
+The `length` parameter is a 16-bit integer that specifies the maximum size of the buffer.  This is the maximum number of bytes that can be stored in the buffer.
 
 After creating a buffer with this command it is possible to use the [write buffer](#command-0) command to write further blocks to the buffer, however this is _probably_ not advisable.
 
@@ -151,15 +167,19 @@ Using this command with a `bufferId` of `65535` (-1) and `0` will be ignored, as
 
 `VDU 23, 0 &A0, bufferId; 4`
 
-NB: The original intent of this command was to provide a way for buffered command sequences to access to VDP state information.  In general this is no longer necessary, as most of this data can now be accessed via [VDP Variables](./VDP-Variables.md).  As of VDP 2.15, the primary use case for this command is to temporarily prevent the VDP from sending data to MOS when certain commands are being executed.
+Do _not_ use this command.  It almost certainly does not do what you want or expect.
 
-This command changes the current output stream of the VDP, allowing [VDP protocol](./System-Commands.md#vdp-serial-protocol) data packets to be send to a buffer, or prevented from being sent, instead of being sent to MOS.
+NB: The original intent of this command was to provide a way for buffered command sequences to access to VDP state information.  In general this is no longer necessary, as almost of this functionality is now available via [VDP Variables](./VDP-Variables.md) in a much easier to use form.
+
+This command changes the current "output stream" of the VDP, allowing [VDP protocol](./System-Commands.md#vdp-serial-protocol) data packets to be sent to a buffer, or prevented from being sent, instead of being sent to MOS.
 
 The default output stream for the main VDU command processor is the communications channel from the VDP to MOS running on the eZ80.
 
 Changes made with this command apply to the current command stream, and any other buffered command sequences that are called from within that sequence.  Once the buffered command sequence has completed, the output stream will be reset to its original value.  (Please note that from VDP 2.8 until 2.14 a bug meant that this behaviour was not observed, and any changes to the output stream applied globally and permanently.  This has been fixed in VDP 2.15.)
 
 The target buffer must be a writable buffer created with [command 3](#create-buffer), or one of two special buffer IDs.  If the buffer does not exist, or the first block within the target buffer is not writable, then this command will do nothing.
+
+In reality, this is a poor way to capture VDP state information, as one does not have full control over when VDP protocol packets are sent.
 
 The two special buffer IDs are:
 
@@ -168,7 +188,7 @@ The two special buffer IDs are:
 - `0`: This will set the output stream back to its original value for the current command stream.  Typically that will be the communications channel from the VDP to MOS running on the eZ80, but this may not be the case if a nested call has been made.
     * NB From VDP 2.8 until 2.14 setting the output stream to 0 would always set the output stream back to the MOS communication channel.  This was a bug that has been fixed in VDP 2.15.
 
-It should be noted that writable buffers can only be written to until the end of the buffer has been reached; once that happens no more data will be written to the buffer.  It is not currently possible to "rewind" an output stream.  If you are using the command to capture VDP protocol pavkets you should ensure that the buffer is large enough to capture all of the data that is expected to be written to it.  The only current way to "rewind" an output stream would be to clear the buffer and create a new one, and then call set output stream again with the newly created buffer.
+It should be noted that writable buffers can only be written to until the end of the buffer has been reached; once that happens no more data will be written to the buffer.  It is not currently possible to "rewind" an output stream.  If you are using the command to capture VDP protocol packets you should ensure that the buffer is large enough to capture all of the data that is expected to be written to it.  The only current way to "rewind" an output stream is to clear the buffer and create a new one, and then call set output stream again with the newly created buffer.
 
 This command should be used with care, as it can cause unexpected behaviour if used incorrectly.  It is strongly recommended to only use this command from within a buffered command sequence.  If you do use it outside of a buffered command sequence, it is important to remember to restore the original output channel using `VDU 23, 0, &A0, 0; 4`.  Failing to do this will mean VDP will stop communicating with MOS, and so basic information such as key presses won't be sent across, effectively causing your Agon to hang.
 
@@ -425,7 +445,7 @@ The list of source buffers can contain repeated buffer IDs.  If a buffer ID is r
 
 If there is insufficient memory available on the VDP to complete this command then it will fail, and the target buffer will be left unchanged.
 
-## Command 14: Consolidate blocks in a buffer
+## Command 14: Consolidate blocks in a buffer {#command-14}
 
 `VDU 23, 0, &A0, bufferId; 14`
 
@@ -433,7 +453,7 @@ Takes all the blocks in a buffer and consolidates them into a single block.  Thi
 
 If there is insufficient memory available on the VDP to complete this command then it will fail, and the buffer will be left unchanged.
 
-## Command 15: Split a buffer into multiple blocks
+## Command 15: Split a buffer into multiple blocks {#command-15}
 
 `VDU 23, 0, &A0, bufferId; 15, blockSize;`
 

@@ -19,7 +19,7 @@ Any VDU command that is the VDP does not recognise (such as `VDU 2` when running
 
 All other characters, i.e. those in the range of 32 to 126 and 128 to 255, are sent to the screen as ASCII, unaltered.
 
-## `VDU 0`: Null (no operation)
+## `VDU 0`: Null (no operation) {#vdu-0}
 
 On encountering a `VDU 0` command, the VDP will do nothing.  This may be useful for padding out a VDU command sequence, or for inserting a placeholder for a command that will be added later.
 
@@ -75,7 +75,7 @@ By default, when the text cursor is active it will move one character to the lef
 
 When the graphics cursor is active the cursor will move in a similar manner, but be constrained by the current graphics viewport and the viewport will not scroll.
 
-## `VDU 9`: Move cursor forward one character
+## `VDU 9`: Move cursor forward one character {#vdu-9}
 
 Moves the currently active cursor one character in the forwards direction, as defined by the current [cursor behaviour](#cursor-behaviour) settings.
 
@@ -110,6 +110,10 @@ Moves the text cursor to the start (or column 0) of the current line, as defined
 When paged mode is on, scrolling will stop after each page.  Output will be paused until "Shift" has been pressed on the keyboard.
 
 From VDP 2.14.0 onwards paged mode has been improved.  A page is no longer always a complete screen of output, but instead will keep up to 6 rows of context.  The VDP now also behaves better when paged mode is active, and will only pause continous output, not just when a certain number of rows has been printed.  Holding down the "Ctrl" key whilst text is being output will cause the VDP to pause briefly before every new line, allowing the user to skim through the text as it is printed (NB this works whether paged mode is enabled or not).  Holding both "Ctrl" and "Shift" will pause the output until either key is released.  You can customise how long the delay between lines will be when "Ctrl" is held, and how many lines of context will be shown through setting their corresponding [VDP variables](VDP-Variables.md).
+
+Further improvements were made to the operation of paged mode on VDP 2.15.0, fixing a few bugs and ensuring that behaviour now better matches those of Acorn systems.  Pressing "Escape" now also resumes output when in paged mode, and the key-press will be passed on to MOS as normal.
+
+It should be noted that the Agon's architecture means that pausing output works differently to Acorn systems.  On the Agon it is the VDP that is responsible for pausing and resuming output which is achieved by pausing the processing of VDU commands.  As the VDP has a command input buffer, it will continue to accept commands from MOS until that buffer is full, queuing them up for later execution.  MOS does not receive any explicit indication that the VDP's output has been paused, instead it will only pause execution when the VDP's command input buffer is full.  There will therefore be a backlog of commands waiting to be processed by the VDP when output is resumed.  Acorn systems don't have such a command buffer, so when output is paused the entire system pauses immediately.  A simple example of how this difference is visible is how pressing "Escape" in a BASIC program behaves when the system is paused for paged mode.  On an Acorn system the user will immediately be returned to the BASIC prompt.  On an Agon system however the VDP will first need to process any queued output before the BASIC prompt is shown, which may involve further pauses if the queued output is sufficient to fill another page.  Given the architecture of the Agon system this difference is essentially unavoidable without making significant changes to how the VDP and MOS interact, which would most likely incur a heavy performance penalty.  This is therefore seen as an acceptable compromise.
 
 ## `VDU 15`: Paged mode Off *
 
@@ -297,7 +301,12 @@ This command controls the behaviour of the text cursor.  It is used to adjust th
 new_setting = (current_setting AND mask) EOR setting
 ```
 
-This method of setting the cursor behaviour allows you to set individual bits, or to clear individual bits, without needing to know the current setting.
+This method of setting the cursor behaviour allows you to set individual bits, or to clear individual bits, without needing to know the current setting.  The use of `AND` and `EOR` however can be slightly confusing and hard to understand.  By using `EOR` we are flipping the bits set in the `setting` value, rather than just turning those bits on.  If we provide a `mask` value of `0` then no bits from the `current_setting` will be retained, and the new setting will just be equal to the `setting` value.  If the mask is `255` (i.e. all bits set) then the resultant new cursor behaviour will be the current setting with the bits in `setting` flipped.    One can therefore ensure that only the bits you wish to change, and the rest remain unaffected, by providing a `mask` value that has all bits set except for those you wish to change, and taking care to ensure that the `setting` value only has those bits you wish to change set.
+
+For example, if one wishes to only enable scroll protection (bit 0) without affecting any of the other settings, one could use:
+```
+VDU 23, 16, 1, 254
+```
 
 The interpretation of the settings byte flags is as follows:
 
@@ -327,9 +336,9 @@ The default value for each setting is zero, i.e. all bits are cleared.
 
 \* Full support for these settings was added in Agon Console8 VDP 2.7.0.  Partial support for bits 1 and 2 was added in Console8 VDP 2.5.0 but only for direction-based scrolling ([`VDU 23, 7`](#vdu-23-7)).
 
-§ Whilst the Quark documentation claims that bits 4 and 5 are supported in the Quark VDP 1.04 release, they were not actually supported in the VDP firmware.  The cursor would always move right after a character was printed, and the text cursor could never wrap to the top of the screen.  The cursor direction bits were also not supported.  Support for scroll protection was also limited to an incorrect (buggy) implementation, which would simply prevent vertical scrolling.  Full support for all of these features was added in Agon Console8 VDP 2.7.0.
+§ Whilst the Quark documentation claims that bits 4 and 5 are supported in the Quark VDP 1.04 release, they were not actually supported in the VDP firmware.  The cursor would always move right after a character was printed, and the text cursor could never wrap to the top of the screen.  The cursor direction bits were also not supported.  Support for scroll protection was also limited to an incorrect (buggy) implementation, which would simply prevent vertical scrolling.  Full support for all of these features was added in Agon Console8 VDP 2.7.0.  Further improvements to ensure that scroll protection works in exactly the same way as on Acorn systems were made in VDP 2.15.0.
 
-Scroll protection, when enabled, means that when in [`VDU 4`](#vdu-4) mode printing a character that results in the cursor moving off the right-hand edge of the screen will cause a "pending newline" to be generated, rather than immediately performing a newline.  When this occurs, the cursor position will be one position greater than the right-most accessible column.  This newline will be executed just before the next character is printed if the cursor has not otherwise been moved back within the screen.  This means that sending a backspace character ([`VDU 127`](#vdu-127)) or cursor left command ([`VDU 8`](#vdu-8)) would cancel the pending newline, whilst a cursor right command will execute it.
+Scroll protection, when enabled, ensures that printing a character when the text cursor is at the last character position on the screen a "pending newline" is generated and the cursor will wait at the edge of the screen, rather than immediately moving to the next line and causing the screen to scroll.  If a subsequent character is printed, or a "cursor right" command ([`VDU 9`](#vdu-9)) is issued, then the pending newline will be executed just before the next character is printed or the cursor moved.  If the cursor is moved back within the screen then the pending newline will be cancelled.
 
 Enabling scroll protection therefore allows you to print a character to the bottom right-most character position on the screen without causing the screen to scroll.
 

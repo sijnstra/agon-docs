@@ -9,7 +9,7 @@ As of VDP 1.04, the bitmap system is integrated with the [Buffered Commands API]
 
 The bitmap system we have on the Agon uses commands that are inspired by Acorn's Graphics eXtension ROM (GXR) system.  Some mistakes were made in the original interpretation of the GXR commands, and so until the Console8 VDP 2.2.0 release it was not possible to use code written for GXR on the Agon.
 
-Acorn only actually had two VDU commands for what it called "sprites", which in the Agon we consider to be "bitmaps".  The first command was used to select a bitmap (so that it may later be used with an appropriate PLOT command), and the second was to define a bitmap from an area of screen.
+Acorn only actually had two VDU commands for what it called "sprites", which on the Agon we consider to be "bitmaps".  The first command was used to select a bitmap (so that it may later be used with an appropriate PLOT command), and the second was to define a bitmap from an area of screen.
 
 The approach taken on Agon (initially at least) was to redefine the "define bitmap from screen" command to instead allow the uploading of a binary bitmap image.  In doing so, the parameters of the command changed, and the bitmap identifier was lost from the command parameters.  Instead, on the Agon, you need to always perform a "select bitmap" command before any other bitmap commands to set the bitmap being used.  Additionally on the Agon, prior to Console8 VDP 2.2.0, plotting bitmaps could only be performed with a custom command, and not with the standard `PLOT` commands.
 
@@ -42,7 +42,9 @@ You need to select a bitmap before it can be plotted onto the screen or use any 
 
 This command is used to load bitmap data directly into the currently selected bitmap.
 
-Before you can load bitmap data into a bitmap, you must first select the bitmap using `VDU 23, 27, 0, n`, where `n` is the 8-bit ID of the bitmap to be loaded, or using `VDU 23, 27, &20, bufferId;` using a 16-bit buffer ID.
+NB rather than using this command to load bitmap data it is recommended to use the [Buffered Commands API](Buffered-Commands-API.md#bitmap-buffers) approach instead.
+
+Before you can load bitmap data into a bitmap with this command, you must first select the bitmap using `VDU 23, 27, 0, n`, where `n` is the 8-bit ID of the bitmap to be loaded, or using `VDU 23, 27, &20, bufferId;` using a 16-bit buffer ID.
 
 The bitmap data is given as a series of bytes as part of the command in RGBA8888 format, meaning that each pixel is represented by four bytes, one each for the red, green, blue, and alpha components of the pixel.  Each component value is in the range of 0-255.  The bytes are given in row-major order, starting at the top left of the bitmap, and working across the rows, and then down the columns.
 
@@ -80,13 +82,13 @@ The bitmap is created in the buffer with the ID 64000+`n`, where `n` is the 8-bi
 
 ### `VDU 23, 27, 3, x; y;`: Draw current bitmap on screen at pixel position x, y
 
-Prior to Agon Console8 VDP 2.2.0, this was the only way to draw a bitmap on-screen.  On more up to date VDP versions is strongly recommended that you use the appropriate [PLOT command](PLOT-Commands.md) instead.
+Prior to Agon Console8 VDP 2.2.0, this was the only way to draw a bitmap on-screen.  On more up to date VDP versions is strongly recommended that you use the appropriate [PLOT command](PLOT-Commands.md#bitmap-plot) instead.
 
-Before this command can be used, a bitmap must be selected using `VDU 23, 27, 0, n`, where `n` is the 8-bit ID of the bitmap to be drawn, or using `VDU 23, 27, &20, bufferId;` using a 16-bit buffer ID.
+Before this command can be used, a valid bitmap must be selected using `VDU 23, 27, 0, n`, where `n` is the 8-bit ID of the bitmap to be drawn, or using `VDU 23, 27, &20, bufferId;` using a 16-bit buffer ID.
 
 The x and y parameters give the pixel position on the screen at which the top left corner of the bitmap will be drawn.  This is in contrast to `PLOT` commands which will (by default) use OS Coordinates, where the origin is at the bottom left of the screen and the screen is always considered to have the dimensions 1280x1024.
 
-Please note that this command does not obey the current graphics viewport or the currently selected coordinate system.  The bitmap will be drawn at the given pixel position, and will _not_ be clipped by the viewport.  To draw bitmaps with clipping, you are advised to use the appropriate bitmap [PLOT commands](PLOT-Commands.md) instead.
+Please note that this command does not obey the current graphics viewport, the currently selected coordinate system, the current painting mode, or any transforms that may be in effect for bitmap plots.  The bitmap will simply be drawn at the given pixel position, and will _not_ be clipped by the viewport.  For these reasons you are strongly advised to use the appropriate bitmap [PLOT commands](PLOT-Commands.md#bitmap-plot) instead.
 
 ### `VDU 23, 27, &20, bufferId;`: Select bitmap using a 16-bit buffer ID *
 
@@ -109,7 +111,7 @@ Valid values for the format parameter are:
 
 It should be noted that the "alpha" channel in both the RGBA8888 and RGBA2222 formats is not properly used by the Agon VDP.  Any non-zero value in the alpha channel is interpreted as "fully visible".  The Agon VDP does not currently support transparency.  The alpha channel is still stored in the bitmap data, and is used when the bitmap is drawn to the screen, but it is not used to blend the bitmap with the background.  (If we improve support for transparency in the future, to maintain compatibility we will do so by adding new bitmap formats, rather than changing the behaviour of the existing formats.)
 
-Mono/Mask bitmaps can be of any width, but their data must be sent using a whole number of bytes per row.  Mon/mask bitmaps are also required to have a colour, and will use the currently selected graphics foreground colour.  If you wish to use a different colour then you must change the graphics foreground colour before creating the bitmap.  Mono/mask bitmaps only draw their "on" pixels, and the "off" pixels are transparent.
+Mono/Mask bitmaps can be of any width, but their data must be sent using a whole number of bytes per row.  Mono/mask bitmaps are also required to have a colour, and will use the currently selected graphics foreground colour.  If you wish to use a different colour then you must change the graphics foreground colour before creating the bitmap.  Mono/mask bitmaps only draw their "on" pixels, and the "off" pixels are transparent.
 
 The use of the "native" format is reserved for internal use by the VDP.  They have some significant limitations, and are not intended for general use.
 
@@ -208,11 +210,19 @@ This command will not affect any bitmap definitions.
 
 This command sets the paint mode for the current sprite.  Please see the documentation on the `GCOL` command for more information on the paint modes.  This command is only supported for software sprites.
 
+If you use this command on a sprite that has been set to be a hardware sprite it will automatically be set to be a software sprite.
+
+NB As of VDP 2.15.0 hardware sprites that use a bitmap in RGBA2222 format can support `XOR` painting mode (mode 3), which is used for the new hardware-sprite based text cursor...  This command will still sets the sprite to be a software sprite though, but you can set the sprite to be a hardware sprite using `VDU 23, 27, 19` after using this command and the paint mode will be retained.  A hardware sprite set to use any other painting mode, or that is in RGBA8888 format, will be interpreted as using the normal "set pixel" mode (mode 0).
+
 ### `VDU 23, 27, 19`: Set sprite to be a hardware sprite ***
 
 This command sets the currently selected sprite to be drawn a hardware sprite.  This command is only supported on VDP 2.12.0 or later.
 
 Please note that at this time to use hardware sprites you need to enable the corresponding test flag for them.  This can be done using `VDU 23, 0, &F8, 2; 1;`.  Until this flag is set, this command will be ignored.
+
+Hardware sprites can only use bitmaps in RGBA8888 or RGBA2222 format.  If the current frame of the sprite is not in one of those formats the sprite will not be drawn to the screen.
+
+As noted above, hardware sprites will generally ignore any paint mode that has been set on a sprite.
 
 ### `VDU 23, 27, 20`: Set sprite to be a software sprite ***
 
@@ -304,3 +314,5 @@ Set up a new mouse cursor using the currently selected bitmap, with its hotspot 
 Once a mouse cursor has been set up in this way, it can be selected for display using [`VDU 23, 0, &89, 3, bitmapId;`](./System-Commands.md#select-mouse-cursor).
 
 Please note that mouse cursor IDs from 0-18 are reserved for the system mouse cursors, and these cannot be overridden.
+
+As of VDP 2.15.0 mouse cursors are drawn using hardware sprites.  This greatly improves their performance and appearance, but does mean that they can only use bitmaps in RGBA8888 or RGBA2222 format, and so mono/mask bitmaps are no longer supported.

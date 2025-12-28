@@ -24,9 +24,9 @@ NB:
 - Prior to MOS 1.03 the subset commands that it supported were indexed from &00, not &80. For example, `VDU 23, 0, &02` to request the cursor position.  Commands in the range &00-&7F were used on Acorn systems to control the VDU hardware, so to avoid conflicts, and to allow for the possibility of supporting some of those commands, Agon commands were re-indexed from &80.
 
 
-## `VDU 23, 0, &0A, n`: Set cursor start line and appearance §§§§
+## `VDU 23, 0, &0A, n`: Set text cursor start line and appearance §§§§
 
-This command defines the start line (or row) of the cursor and its appearance.  Bits 0-4 define the start line of the cursor, and bits 5-6 define the cursor appearance.  The meaning of the appearance bits are as follows:
+This command defines the start line (or row) of the text cursor and its appearance.  Bits 0-4 define the start line of the cursor, and bits 5-6 define the cursor appearance.  The meaning of the appearance bits are as follows:
 
 | Bit 6 | Bit 5 | Meaning |
 | ----- | ----- | ------- |
@@ -44,16 +44,16 @@ The cursor start line must be less than the current font height (which is curren
 Support for this command was introduced in the Console8 VDP 2.7.0.  Its behaviour is compatible with the equivalent commands on the Acorn BBC Micro and RISC OS.
 
 
-## `VDU 23, 0, &0B, n`: Set cursor end line §§§§
+## `VDU 23, 0, &0B, n`: Set text cursor end line §§§§
 
-This defines the end line of the cursor.  The displayed cursor will be drawn from the start line to the end line.  The end line must be greater than the start line, and less than the current font height.
+This defines the end line of the text cursor.  The displayed cursor will be drawn from the start line to the end line.  The end line must be greater than the start line, and less than the current font height.
 
 Together with the start line, this command defines the vertical size of the cursor.
 
 If the start and end lines are equal then the cursor will be drawn as a horizontal line.  If the end line value is less than the start line value then the cursor will not be drawn.  If a value is given that is greater than the current font height then the cursor will be drawn to the end of the font height.
 
 
-## `VDU 23, 0, &80, n`: General poll
+## `VDU 23, 0, &80, n`: General poll {#vdu-23-0-80}
 
 This command will echo back `n` to MOS (see [VDP Serial Protocol](#vdp-serial-protocol))
 
@@ -124,7 +124,9 @@ This command controls the Real Time Clock within the Agon VDP.
     - a data packet will be sent to MOS with the current RTC data, and [MOS sysvars](../mos/API.md#sysvars) updated accordingly
 
 - `VDU 23, 0, &87, 1, y, m, d, h, m, s`: Set the RTC
-
+    - sets the RTC to the given year, month, day, hour, minute, and second values
+    - the year value is used as a signed 8-bit value and is interpreted as an offset from 1980
+    - if the resultant year is less than 1970 then the command will be ignored
 
 ## `VDU 23, 0, &88, delay; rate; led`: Keyboard Control *
 
@@ -199,6 +201,8 @@ There are several system mouse cursors available for use.  These have been inher
 Additional cursors can be added using [`VDU 23, 27, &40, hotX, hotY`](./Bitmaps-API.md#mouse-cursor) which will allow you to create a custom mouse cursor using a bitmap.  Once your new cursor has been defined you will be able to select it using this command.  Please note the inbuilt system mouse cursors cannot be overridden.
 
 Whilst this command will only work if the mouse has been successfully [enabled](#enable-mouse), it is possible to display a mouse cursor without a mouse being connected/enabled by setting the equivalent [VDP Variable](./VDP-Variables.md#mouse-vars) to the desired cursor ID.
+
+As of VDP 2.15.0, mouse cursors are drawn using the hardware sprite system.  This greatly improves their performance and appearance, and so they will always be drawn in full colour no matter which screen mode is in use.  It does mean however that mouse cursors can only use bitmaps in RGBA8888 or RGBA2222 format, and so mono/mask bitmaps are no longer supported for mouse cursors.
 
 ### `VDU 23, 0, &89, 4, x; y;`: Set mouse cursor position
 
