@@ -431,7 +431,7 @@ This command resets the graphics and text viewports to their default values, hom
 
 NB prior to Console8 VDP 2.8.0, this command had a bug and did not reset the graphics origin.
 
-## `VDU 27, char`: Output character to screen §
+## `VDU 27, char`: Output character to screen § {#vdu-27}
 
 Sends the next character to the screen.  This allows for characters outside of the normal ASCII range of 32-126 and 128-255 to be drawn on the screen.
 

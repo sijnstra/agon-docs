@@ -376,7 +376,7 @@ This command temporarily enables the VDP's "paged mode", as if a `VDU 14` comman
 
 This command is useful for applications that need to temporarily enable paged mode, but do not want to change the paged mode setting for the VDP permanently.  For example, MOS 3.0 uses this command to ensure that star commands that can output a lot of text to screen will be automatically paged.
 
-## `VDU 23, 0, &9B, bufferId;`: Print the contents of a buffer to the screen §§§§§§
+## `VDU 23, 0, &9B, bufferId;`: Print the contents of a buffer to the screen §§§§§§ {#vdu-23-0-9b}
 
 If a buffer is found with the given `bufferId`, then this command will print a buffer out to the screen, using only the raw character values. This bypasses VDU command processing, so no control characters at all are supported and will be printed as-is.
 
