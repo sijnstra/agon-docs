@@ -65,7 +65,7 @@ nav:
     - 'Start here': index.md
     - 'FAQ': FAQ.md
     - 'Theory of operation': Theory-of-operation.md
-    - 'Programming': programming.md
+    - 'Programming': Programming.md
   - 'MOS':
       - 'Overview': MOS.md
       - 'Command line': mos/Star-Commands.md
@@ -85,10 +85,10 @@ nav:
     - 'Bitmaps and Sprites API': vdp/Bitmaps-API.md
     - 'Buffered Commands API': vdp/Buffered-Commands-API.md
     - 'Context Management API': vdp/Context-Management-API.md
-    - 'Font Management API': vdp/Font-API.md
-    - 'VDP Variables': vdp/VDP-Variables.md
     - 'Copper Effects API': vdp/Copper-API.md
+    - 'Font Management API': vdp/Font-API.md
     - 'Tile Engine': vdp/Tile-Engine.md
+    - 'VDP Variables': vdp/VDP-Variables.md
 
   - 'BBC Basic': BBC-BASIC-for-Agon.md
   - 'GPIO': GPIO.md
