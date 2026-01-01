@@ -169,7 +169,7 @@ Using this command with a `bufferId` of `65535` (-1) and `0` will be ignored, as
 
 Do _not_ use this command.  It almost certainly does not do what you want or expect.
 
-NB: The original intent of this command was to provide a way for buffered command sequences to access to VDP state information.  In general this is no longer necessary, as almost of this functionality is now available via [VDP Variables](./VDP-Variables.md) in a much easier to use form.
+NB: The original intent of this command was to provide a way for buffered command sequences to access to VDP state information.  In general this is no longer necessary, as almost of this functionality is now available via [VDP Variables](./VDP-Variables.md) in a much easier to use form.  An alternative use of this command was to suppress VDP protocol packets from being sent to MOS - in VDP 2.15 one can suppress the next VDP protocol packet by setting VDP Variable `&103`, which is a much safer approach.
 
 This command changes the current "output stream" of the VDP, allowing [VDP protocol](./System-Commands.md#vdp-serial-protocol) data packets to be sent to a buffer, or prevented from being sent, instead of being sent to MOS.
 
