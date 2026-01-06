@@ -4,6 +4,7 @@ The Tile Engine is a series of routines in the VDP that allows for the loading o
 
 The Tile Engine is accessed through the ```VDU 23,0,&C2``` (aka ```VDU 23,0,194```) commands. While not all VDU commands starting with this sequence are currently in use, many are defined and reserved for future enhancements.
 
+> Note: The Tile Engine functionality is currently enabled through the use of a feature flag. To enable the Tile Engine, execute ```VDU 23,0,248,768;0;``` at the start of your code.
 
 ## Drawing Co-ordinates
 
@@ -16,17 +17,21 @@ The Tile Bank is a block of memory in the VDP that can hold up to 255 8x8 charac
 
 ### Initialise/Reset Tile Bank
 
-```VDU 23, 0, &C2, 0, 0, 0, 0, 0```
+```VDU 23, 0, &C2, 0, <tilebank>, 0, 0, 0```
 
 This command will initialise or reset (clear) the tile bank. It must be executed before attempting to load any tiles.
 
+From VDP 2.15.0, four tile banks (0-3) are supported, each capable of holding 255 tiles. This allows for up to 1020 unique tiles to be uploaded to the VDP.
+
 ### Load Tile Into Bank
 
-```VDU 23, 0, &C2, 1, 0, <tileid>, b1, b2 ... b64```
+```VDU 23, 0, &C2, 1, <tilebank>, <tileid>, b1, b2 ... b64```
 
 This command will load 64 bytes of data into the specified tile id.
 
-Valid values for ```tileid``` are 1-255. Do not load any data into Tile Id 0 as it has a special purpose and will not be drawn.
+From VDP 2.15.0, valid values for ```tilebank``` are 0-3.
+
+Valid values for ```tileid``` are 1-255. Do not load any data into Tile Id 0 (in any of the tile banks) as it has a special purpose and will not be drawn.
 
 #### Tile Format
 
@@ -66,13 +71,13 @@ The position of each byte in the tile is shown below (in hex), working from top 
 
 ### Draw Tile From Tile Bank
 
-```VDU 23, 0, &C2, 6, 0, <tileid>, 0, <xpos>, <ypos>, <xoffset>, <yoffset>, <attribute>```
+```VDU 23, 0, &C2, 6, <tilebank>, <tileid>, 0, <xpos>, <ypos>, <xoffset>, <yoffset>, <attribute>```
 
 This command allows for a single tile to be drawn on screen.
 
 ### Delete/Free Tile Bank
 
-```VDU 23, 0, &C2, 7, 0```
+```VDU 23, 0, &C2, 7, <tilebank>```
 
 This command will delete the Tile Bank (if allocated) and free up previously allocated memory in the ESP32.
 
@@ -94,13 +99,14 @@ The ```<attribute>``` byte provides additional instructions on how to display th
 | 6   | Reserved - should be set to 0   |
 | 5   | Reserved - should be set to 0   |
 | 4   | Reserved - should be set to 0   |
-| 3   | Reserved - should be set to 0   |
-| 2   | Reserved - should be set to 0   |
+| 3   | Tile bank	 				    |
+| 2   | Tile bank						|
 | 1   | Flip Y:  0 = No flip, 1 = flip  |
 | 0   | Flip X:  0 = No flip, 1 = flip  |
 
 If the ```<tileid>``` is set to 0, the attribute byte should also be set to 0 in order to ensure that the tile is not drawn.
 
+From VDP 2.15.0, bits 2 and 3 of the attribute byte can be used to specify one of four tile banks.
 
 ### Initialise/Reset Tile Map
 
