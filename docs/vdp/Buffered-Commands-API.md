@@ -497,7 +497,7 @@ This is useful for splitting a bitmap into a number of separate columns, which c
 
 `VDU 23, 0, &A0, bufferId; 19, width; [targetBufferId1;] [targetBufferId2;] ... 65535;`
 
-This command essentially operates the same as command 18, but the block count is determined by the number of target buffers specified.  The blocks are spread across the target buffers in the order they are specified, with one block placed in each target.
+This command essentially operates the same as command 18, but the block count is determined by the number of target buffers specified.  The blocks are spread across the target buffers in the order they are specified, with one block placed in each target.  The target buffers are specified as a list of buffer IDs, terminated by a buffer ID of -1 (65535).
 
 ## Command 20: Split by width into blocks and spread across blocks starting at target buffer ID
 
