@@ -112,9 +112,13 @@ Sends a command to the [VDP Enhanced Audio API](Enhanced-Audio-API.md) **
 
 Prior to VDP 1.04 this command could only perform what is now audio command zero, which plays a note on a channel.
 
-## `VDU 23, 0, &86`: Fetch the screen dimensions
+## `VDU 23, 0, &86`: Fetch the screen dimensions and mode info
 
-Returns the screen dimensions to MOS.  Generally applications should not need to call this, as this information will be automatically sent to MOS when the screen mode is changed.
+Returns the screen dimensions to MOS buy instructing the VDP to send a mode info packet.  Generally applications should not need to call this, as this information will be automatically sent to MOS when the screen mode is changed. The mode info packet includes the following data:
+* Screen height and width in pixels
+* Viewport height and width in characters
+* Video mode
+* Colour depth
 
 ## `VDU 23, 0, &87`: RTC control *
 
